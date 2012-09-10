@@ -23,9 +23,13 @@ Currently supports following 2 libraries, and it's also possible to add new adap
 ## Usage
 
 ```java
+import com.m3.memcached.facade.*;
+
 Configuration config = new Configuration();
 config.setAdaptorClassName("com.m3.memcached.facade.adaptor.SpymemcachedAdaptor");
 config.setAddressesAsString("server1:11211,server2:11211"); // csv format
+config.setNamespace("com.m3.memcached.example");
+
 MemcachedClient memcached = MemcachedClientFactory.create(config);
 
 Thread.sleep(500L);
@@ -41,11 +45,13 @@ or configure with `memcached.properties` as follows:
 
 ```
 clientAdaptorClassName=com.m3.memcached.facade.adaptor.SpymemcachedAdaptor
-serverAddresses=localhost:11211
-namespace=myapp
+serverAddresses=server1:11211,server2:11211
+namespace=com.m3.memcached.example
 ```
 
 ```java
+import com.m3.memcached.facade.*;
+
 Configuration config = Configuration.loadConfigFromProperties();
 MemcachedClient memcached = MemcachedClientFactory.create(config);
 ```
@@ -63,22 +69,19 @@ MemcachedClient memcached = MemcachedClientFactory.create(config);
 
 ## License
 
-```java
-/*
- * Copyright 2011 - 2012 M3, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
- * either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 ```
+ Copyright 2011 - 2012 M3, Inc.
 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ either express or implied. See the License for the specific language
+ governing permissions and limitations under the License.
+```
 
