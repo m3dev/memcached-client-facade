@@ -15,12 +15,15 @@
  */
 package com.m3.memcached.facade.util;
 
+/**
+ * Assertion
+ */
 public class Assertion {
 
     private Assertion() {
     }
 
-    public static void notNullValue(String name, Object value) {
+    public static void notNullValue(String name, Object value) throws IllegalArgumentException {
         if (value == null) {
             throw new IllegalArgumentException("Null is not allowed for " + name);
         }

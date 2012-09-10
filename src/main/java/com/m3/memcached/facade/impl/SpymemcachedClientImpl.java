@@ -25,6 +25,9 @@ import java.util.concurrent.TimeUnit;
 
 import static com.m3.memcached.facade.util.Assertion.notNullValue;
 
+/**
+ * Concrete client implementation with Spymemcached
+ */
 public class SpymemcachedClientImpl extends ClientImplBase {
 
     private MemcachedClient memcached;
@@ -63,13 +66,13 @@ public class SpymemcachedClientImpl extends ClientImplBase {
     @Override
     public <T> void set(String key, int secondsToExpire, T value) throws IOException {
         notNullValue("key", key);
-        memcached.set(getKey(key), secondsToExpire, value);
+        memcached.set(getKeyWithNamespace(key), secondsToExpire, value);
     }
 
     @Override
     public <T> void setAndEnsure(String key, int secondsToExpire, T value) throws IOException {
         notNullValue("key", key);
-        Future<Boolean> future = memcached.set(getKey(key), secondsToExpire, value);
+        Future<Boolean> future = memcached.set(getKeyWithNamespace(key), secondsToExpire, value);
         try {
             boolean result = future.get(5, TimeUnit.SECONDS);
             if (!result) {
@@ -90,7 +93,7 @@ public class SpymemcachedClientImpl extends ClientImplBase {
     @SuppressWarnings("unchecked")
     public <T> T get(String key) throws IOException {
         notNullValue("key", key);
-        return (T) memcached.get(getKey(key));
+        return (T) memcached.get(getKeyWithNamespace(key));
     }
 
 

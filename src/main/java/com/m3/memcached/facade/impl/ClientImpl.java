@@ -19,12 +19,33 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.List;
 
+/**
+ * Concrete client implementation
+ */
 public interface ClientImpl {
 
+    /**
+     * Is initialized
+     *
+     * @return true when already initialized
+     */
     boolean isInitialized();
 
+    /**
+     * Initializes this instance with default namespace
+     *
+     * @param addresses memcached server addresses
+     * @throws IOException something wrong
+     */
     void initialize(List<InetSocketAddress> addresses) throws IOException;
 
+    /**
+     * Initializes this instance
+     *
+     * @param addresses memcached server addresses
+     * @param namespace namespace
+     * @throws IOException something wrong
+     */
     void initialize(List<InetSocketAddress> addresses, String namespace) throws IOException;
 
     String getNamespace();

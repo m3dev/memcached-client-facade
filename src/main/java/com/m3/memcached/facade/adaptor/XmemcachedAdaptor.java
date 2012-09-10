@@ -18,6 +18,9 @@ package com.m3.memcached.facade.adaptor;
 import com.m3.memcached.facade.impl.ClientImpl;
 import com.m3.memcached.facade.impl.XmemcachedClientImpl;
 
+/**
+ * Adaptor for Xmemcached implementation
+ */
 public class XmemcachedAdaptor implements MemcachedClientAdaptor {
 
     @Override

@@ -17,11 +17,23 @@ package com.m3.memcached.facade.impl;
 
 import com.m3.memcached.facade.MemcachedClient;
 
+/**
+ * Basic implementation for {@link ClientImpl}
+ */
 public abstract class ClientImplBase implements ClientImpl {
 
+    /**
+     * Default namespace
+     */
     protected String namespace = MemcachedClient.DEFAULT_NAMESPACE;
 
-    protected String getKey(String key) {
+    /**
+     * Returns key with namespace
+     *
+     * @param key raw key
+     * @return key with namespace
+     */
+    protected String getKeyWithNamespace(String key) {
         return (this.namespace + "::" + key).replaceAll("\\s", "_");
     }
 

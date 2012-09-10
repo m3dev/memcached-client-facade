@@ -23,30 +23,67 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Memcached Client Configuration
+ */
 public class Configuration {
 
-    public static final String PROPERTIES_FILENAME = "memcached-client-facade.properties";
+    /**
+     * Default properties file name
+     */
+    public static final String DEFAULT_PROPERTIES_FILENAME = "memcached-client-facade.properties";
+
+    /**
+     * Key for client adaptor class name
+     */
     public static final String KEY_CLIENT_ADAPTOR_CLASS_NAME = "client.adaptorClassName";
+
+    /**
+     * Key for server addresses
+     */
     public static final String KEY_CLIENT_SERVER_ADDRESSES = "server.addresses";
 
-    public void loadConfigFromProperties() throws IOException,
-            ClassNotFoundException {
+    /**
+     * Client adaptor class
+     */
+    private Class<? extends MemcachedClientAdaptor> adaptorClass;
+
+    /**
+     * Memcached server addresses
+     */
+    private List<InetSocketAddress> addresses;
+
+    /**
+     * Namespace (= prefix for all the memcached keys)
+     */
+    private String namespace = MemcachedClient.DEFAULT_NAMESPACE;
+
+    /**
+     * Loads settings from default properties file
+     *
+     * @throws IOException            when failed loading
+     * @throws ClassNotFoundException when invalid class name is specified
+     */
+    public void loadConfigFromProperties() throws IOException, ClassNotFoundException {
+        loadConfigFromProperties(DEFAULT_PROPERTIES_FILENAME);
+    }
+
+    /**
+     * Loads settings from the properties file
+     *
+     * @param properties properties file name
+     * @throws IOException            when failed loading
+     * @throws ClassNotFoundException when invalid class name is specified
+     */
+    public void loadConfigFromProperties(String properties) throws IOException, ClassNotFoundException {
         Properties props = new Properties();
-        props.load(this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILENAME));
-
+        props.load(this.getClass().getClassLoader().getResourceAsStream(properties));
         setAdaptorClassName(props.getProperty(KEY_CLIENT_ADAPTOR_CLASS_NAME));
-
         String addresses = props.getProperty(KEY_CLIENT_SERVER_ADDRESSES);
         if (addresses != null) {
             setAddressesAsString(addresses);
         }
     }
-
-    private Class<? extends MemcachedClientAdaptor> adaptorClass;
-
-    private List<InetSocketAddress> addresses;
-
-    private String namespace = MemcachedClient.DEFAULT_NAMESPACE;
 
     public Class<? extends MemcachedClientAdaptor> getAdaptorClass() {
         return adaptorClass;

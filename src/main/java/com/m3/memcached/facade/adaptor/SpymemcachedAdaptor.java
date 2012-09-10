@@ -18,6 +18,9 @@ package com.m3.memcached.facade.adaptor;
 import com.m3.memcached.facade.impl.ClientImpl;
 import com.m3.memcached.facade.impl.SpymemcachedClientImpl;
 
+/**
+ * Adaptor for Spymemcached implementation
+ */
 public class SpymemcachedAdaptor implements MemcachedClientAdaptor {
 
     @Override

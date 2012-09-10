@@ -15,11 +15,21 @@
  */
 package com.m3.memcached.facade;
 
+/**
+ * {@link MemcachedClient} Factory
+ */
 public class MemcachedClientFactory {
 
     private MemcachedClientFactory() {
     }
 
+    /**
+     * Returns a new {@link MemcachedClient} instance
+     *
+     * @param config configuration
+     * @return a new instance
+     * @throws Exception something wrong
+     */
     public static MemcachedClient create(Configuration config) throws Exception {
         return MemcachedClientPool.getMemcachedClient(config);
     }

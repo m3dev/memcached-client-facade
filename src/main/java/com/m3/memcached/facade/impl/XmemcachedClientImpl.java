@@ -24,6 +24,9 @@ import java.util.List;
 
 import static com.m3.memcached.facade.util.Assertion.notNullValue;
 
+/**
+ * Concrete client implementation with Xmemcached
+ */
 public class XmemcachedClientImpl extends ClientImplBase {
 
     private MemcachedClient memcached;
@@ -50,7 +53,7 @@ public class XmemcachedClientImpl extends ClientImplBase {
     public <T> void set(String key, int secondsToExpire, T value) throws IOException {
         notNullValue("key", key);
         try {
-            memcached.set(getKey(key), secondsToExpire, value);
+            memcached.set(getKeyWithNamespace(key), secondsToExpire, value);
         } catch (Exception e) {
             String failedMessage = "Failed to set value on memcached! " +
                     "(key:" + key + ",secondsToExpire:" + secondsToExpire + ",value:" + value + ")";
@@ -64,7 +67,7 @@ public class XmemcachedClientImpl extends ClientImplBase {
         notNullValue("key", key);
         try {
             set(key, secondsToExpire, value);
-            T cached = (T) memcached.get(getKey(key));
+            T cached = (T) memcached.get(getKeyWithNamespace(key));
             if (cached == null) {
                 String failedMessage = "Failed to set value on memcached! " +
                         "(key:" + key + ",secondsToExpire:" + secondsToExpire + ",value:" + value + ")";
@@ -82,7 +85,7 @@ public class XmemcachedClientImpl extends ClientImplBase {
     public <T> T get(String key) throws IOException {
         notNullValue("key", key);
         try {
-            return (T) memcached.get(getKey(key));
+            return (T) memcached.get(getKeyWithNamespace(key));
         } catch (Exception e) {
             String failedMessage = "Failed to get value on memcached! (key:" + key + ")";
             throw new IOException(failedMessage, e);

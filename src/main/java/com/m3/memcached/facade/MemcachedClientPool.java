@@ -21,15 +21,31 @@ import com.m3.memcached.facade.util.Assertion;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Memcached Client Pool
+ */
 public final class MemcachedClientPool {
 
+    /**
+     * Default implementation
+     */
     private static final String DEFAULT_CLIENT_ADAPTOR_NAME = "com.m3.memcached.facade.adaptor.SpymemcachedAdaptor";
 
     private MemcachedClientPool() {
     }
 
+    /**
+     * Cached client instances
+     */
     private static final Map<String, MemcachedClient> CACHED_CLIENTS = new ConcurrentHashMap<String, MemcachedClient>();
 
+    /**
+     * Returns a cached {@link MemcachedClient} instance
+     *
+     * @param config
+     * @return
+     * @throws Exception
+     */
     @SuppressWarnings("unchecked")
     public static MemcachedClient getMemcachedClient(Configuration config) throws Exception {
 

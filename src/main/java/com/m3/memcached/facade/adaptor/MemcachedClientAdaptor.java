@@ -17,8 +17,16 @@ package com.m3.memcached.facade.adaptor;
 
 import com.m3.memcached.facade.impl.ClientImpl;
 
+/**
+ * Adaptor for memcached client implementation
+ */
 public interface MemcachedClientAdaptor {
 
+    /**
+     * Returns client implementation class
+     *
+     * @return class
+     */
     Class<? extends ClientImpl> getClientImplClass();
 
 }
