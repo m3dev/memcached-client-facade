@@ -21,8 +21,7 @@ public class MemcachedClientTest {
     @Before
     public void setUp() throws Exception {
         if (config == null) {
-            config = new Configuration();
-            config.loadConfigFromProperties();
+            config = Configuration.loadConfigFromProperties();
         }
         addresses = config.getAddresses();
     }

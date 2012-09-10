@@ -23,8 +23,7 @@ public class SpymemcachedClientImplTest {
     @Before
     public void setUp() throws Exception {
         if (config == null) {
-            config = new Configuration();
-            config.loadConfigFromProperties();
+            config = Configuration.loadConfigFromProperties();
         }
         memcached.initialize(config.getAddresses());
         addresses = config.getAddresses();

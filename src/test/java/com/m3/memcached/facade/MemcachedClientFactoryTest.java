@@ -14,8 +14,7 @@ public class MemcachedClientFactoryTest {
 
     @Test
     public void create_A$Configuration_XmemcachedAdaptor() throws Exception {
-        Configuration config = new Configuration();
-        config.loadConfigFromProperties();
+        Configuration config = Configuration.loadConfigFromProperties();
         config.setAdaptorClassName("com.m3.memcached.facade.adaptor.XmemcachedAdaptor");
         MemcachedClient memcached = MemcachedClientFactory.create(config);
         Thread.sleep(500L);

@@ -31,17 +31,23 @@ public class Configuration {
     /**
      * Default properties file name
      */
-    public static final String DEFAULT_PROPERTIES_FILENAME = "memcached-client-facade.properties";
+    public static final String DEFAULT_PROPERTIES_FILENAME = "memcached.properties";
 
     /**
      * Key for client adaptor class name
      */
-    public static final String KEY_CLIENT_ADAPTOR_CLASS_NAME = "client.adaptorClassName";
+    public static final String KEY_CLIENT_ADAPTOR_CLASS_NAME = "clientAdaptorClassName";
 
     /**
      * Key for server addresses
      */
-    public static final String KEY_CLIENT_SERVER_ADDRESSES = "server.addresses";
+    public static final String KEY_CLIENT_SERVER_ADDRESSES = "serverAddresses";
+
+    /**
+     * Key for namespace
+     */
+    public static final String KEY_NAMESPACE = "namespace";
+
 
     /**
      * Client adaptor class
@@ -61,28 +67,36 @@ public class Configuration {
     /**
      * Loads settings from default properties file
      *
+     * @return configuration
      * @throws IOException            when failed loading
      * @throws ClassNotFoundException when invalid class name is specified
      */
-    public void loadConfigFromProperties() throws IOException, ClassNotFoundException {
-        loadConfigFromProperties(DEFAULT_PROPERTIES_FILENAME);
+    public static Configuration loadConfigFromProperties() throws IOException, ClassNotFoundException {
+        return loadConfigFromProperties(DEFAULT_PROPERTIES_FILENAME);
     }
 
     /**
      * Loads settings from the properties file
      *
      * @param properties properties file name
+     * @return configuration
      * @throws IOException            when failed loading
      * @throws ClassNotFoundException when invalid class name is specified
      */
-    public void loadConfigFromProperties(String properties) throws IOException, ClassNotFoundException {
+    public static Configuration loadConfigFromProperties(String properties) throws IOException, ClassNotFoundException {
+        Configuration config = new Configuration();
         Properties props = new Properties();
-        props.load(this.getClass().getClassLoader().getResourceAsStream(properties));
-        setAdaptorClassName(props.getProperty(KEY_CLIENT_ADAPTOR_CLASS_NAME));
+        props.load(Configuration.class.getClassLoader().getResourceAsStream(properties));
+        config.setAdaptorClassName(props.getProperty(KEY_CLIENT_ADAPTOR_CLASS_NAME));
         String addresses = props.getProperty(KEY_CLIENT_SERVER_ADDRESSES);
         if (addresses != null) {
-            setAddressesAsString(addresses);
+            config.setAddressesAsString(addresses);
         }
+        String namespace = props.getProperty(KEY_NAMESPACE);
+        if (namespace != null) {
+            config.setNamespace(namespace);
+        }
+        return config;
     }
 
     public Class<? extends MemcachedClientAdaptor> getAdaptorClass() {
@@ -121,9 +135,9 @@ public class Configuration {
     public void setAddressesAsStringArray(String[] addresses) {
         this.addresses = new ArrayList<InetSocketAddress>();
         for (String address : addresses) {
-            String[] splitted = address.split(":");
-            if (splitted.length == 2) {
-                this.addresses.add(new InetSocketAddress(splitted[0], Integer.valueOf(splitted[1])));
+            String[] splittedByColon = address.split(":");
+            if (splittedByColon.length == 2) {
+                this.addresses.add(new InetSocketAddress(splittedByColon[0], Integer.valueOf(splittedByColon[1])));
             } else {
                 throw new IllegalArgumentException("Invalid address format (" + address + ")");
             }

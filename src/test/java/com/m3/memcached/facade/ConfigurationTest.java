@@ -20,8 +20,10 @@ public class ConfigurationTest {
 
     @Test
     public void loadConfigFromProperties_A$() throws Exception {
-        Configuration target = new Configuration();
-        target.loadConfigFromProperties();
+        Configuration config = Configuration.loadConfigFromProperties();
+        assertThat(config.getAdaptorClass().toString(), is(equalTo("class com.m3.memcached.facade.adaptor.SpymemcachedAdaptor")));
+        assertThat(config.getAddresses().get(0).toString(), is(equalTo("localhost/127.0.0.1:11211")));
+        assertThat(config.getNamespace().toString(), is(equalTo("myapp")));
     }
 
     @Test

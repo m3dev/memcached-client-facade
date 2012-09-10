@@ -22,14 +22,6 @@ Currently supports following 2 libraries, and it's also possible to add new adap
 
 ## Usage
 
-#### com.m3.memcached.facade.adaptor.SpymemcachedAdaptor
-
-  for http://code.google.com/p/spymemcached/
-
-#### com.m3.memcached.facade.adaptor.XmemcachedAdaptor
-
-  for http://code.google.com/p/xmemcached/
-
 ```java
 Configuration config = new Configuration();
 config.setAdaptorClassName("com.m3.memcached.facade.adaptor.SpymemcachedAdaptor");
@@ -44,6 +36,30 @@ assertThat(memcached.get("stopped time"), is(equalTo(toBeCached))); // "Wed Oct 
 Thread.sleep(1000L);
 assertThat(memcached.get("stopped time"), is(nullValue())); // null
 ```
+
+or configure with `memcached.properties` as follows:
+
+```
+clientAdaptorClassName=com.m3.memcached.facade.adaptor.SpymemcachedAdaptor
+serverAddresses=localhost:11211
+namespace=myapp
+```
+
+```java
+Configuration config = Configuration.loadConfigFromProperties();
+MemcachedClient memcached = MemcachedClientFactory.create(config);
+```
+
+### Adaptors for concrete implementation
+
+- com.m3.memcached.facade.adaptor.SpymemcachedAdaptor
+
+  for http://code.google.com/p/spymemcached/
+
+- com.m3.memcached.facade.adaptor.XmemcachedAdaptor
+
+  for http://code.google.com/p/xmemcached/
+
 
 ## License
 

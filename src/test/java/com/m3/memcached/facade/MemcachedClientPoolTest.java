@@ -14,8 +14,7 @@ public class MemcachedClientPoolTest {
     @Before
     public void setUp() throws Exception {
         if (config == null) {
-            config = new Configuration();
-            config.loadConfigFromProperties();
+            config = Configuration.loadConfigFromProperties();
         }
     }
 

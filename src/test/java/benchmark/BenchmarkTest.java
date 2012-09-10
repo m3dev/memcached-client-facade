@@ -26,13 +26,11 @@ public class BenchmarkTest {
 
     @Before
     public void setupClients() throws Exception {
-        Configuration spyConfig = new Configuration();
-        spyConfig.loadConfigFromProperties();
+        Configuration spyConfig = Configuration.loadConfigFromProperties();
         spyConfig.setAdaptorClass(SpymemcachedAdaptor.class);
         spymemcached = MemcachedClientFactory.create(spyConfig);
 
-        Configuration xConfig = new Configuration();
-        xConfig.loadConfigFromProperties();
+        Configuration xConfig = Configuration.loadConfigFromProperties();
         xConfig.setAdaptorClass(XmemcachedAdaptor.class);
         xmemcached = MemcachedClientFactory.create(xConfig);
     }
