@@ -46,14 +46,6 @@
 
     <dependencies>
 
-        <!-- aopalliance -->
-        <dependency>
-            <groupId>aopalliance</groupId>
-            <artifactId>aopalliance</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- spymemcached -->
         <dependency>
             <groupId>spy</groupId>
