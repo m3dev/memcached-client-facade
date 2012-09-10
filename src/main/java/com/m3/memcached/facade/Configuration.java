@@ -52,16 +52,13 @@ public class Configuration {
         return adaptorClass;
     }
 
-    public void setAdaptorClass(
-            Class<? extends MemcachedClientAdaptor> adaptorClass) {
+    public void setAdaptorClass(Class<? extends MemcachedClientAdaptor> adaptorClass) {
         this.adaptorClass = adaptorClass;
     }
 
     @SuppressWarnings("unchecked")
-    public void setAdaptorClassName(String adaptorClassName)
-            throws ClassNotFoundException {
-        this.adaptorClass = (Class<? extends MemcachedClientAdaptor>) Class
-                .forName(adaptorClassName);
+    public void setAdaptorClassName(String adaptorClassName) throws ClassNotFoundException {
+        this.adaptorClass = (Class<? extends MemcachedClientAdaptor>) Class.forName(adaptorClassName);
     }
 
     public String getNamespace() {
@@ -81,8 +78,7 @@ public class Configuration {
     }
 
     public void setAddressesAsString(String addresses) {
-        setAddressesAsStringArray((addresses != null) ? addresses.split(",")
-                : new String[]{addresses});
+        setAddressesAsStringArray((addresses != null) ? addresses.split(",") : new String[]{addresses});
     }
 
     public void setAddressesAsStringArray(String[] addresses) {

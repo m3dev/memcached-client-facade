@@ -46,16 +46,14 @@ public class SpymemcachedClientImpl extends ClientImplBase {
     }
 
     @Override
-    public void initialize(List<InetSocketAddress> addresses)
-            throws IOException {
+    public void initialize(List<InetSocketAddress> addresses) throws IOException {
         notNullValue("addresses", addresses);
         memcached = new MemcachedClient(addresses);
         waitForConnectionReady();
     }
 
     @Override
-    public void initialize(List<InetSocketAddress> addresses, String namespace)
-            throws IOException {
+    public void initialize(List<InetSocketAddress> addresses, String namespace) throws IOException {
         notNullValue("addresses", addresses);
         memcached = new MemcachedClient(addresses);
         setNamespace(namespace);
@@ -63,15 +61,13 @@ public class SpymemcachedClientImpl extends ClientImplBase {
     }
 
     @Override
-    public <T> void set(String key, int secondsToExpire, T value)
-            throws IOException {
+    public <T> void set(String key, int secondsToExpire, T value) throws IOException {
         notNullValue("key", key);
         memcached.set(getKey(key), secondsToExpire, value);
     }
 
     @Override
-    public <T> void setAndEnsure(String key, int secondsToExpire, T value)
-            throws IOException {
+    public <T> void setAndEnsure(String key, int secondsToExpire, T value) throws IOException {
         notNullValue("key", key);
         Future<Boolean> future = memcached.set(getKey(key), secondsToExpire, value);
         try {
