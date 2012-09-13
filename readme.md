@@ -15,7 +15,7 @@ Currently supports following 2 libraries, and it's also possible to add new adap
   <dependency>
     <groupId>com.m3</groupId>
     <artifactId>memcached-client-facade</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </dependency>
 </dependencies>
 ```
