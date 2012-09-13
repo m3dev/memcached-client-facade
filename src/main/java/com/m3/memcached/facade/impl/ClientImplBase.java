@@ -23,9 +23,14 @@ import com.m3.memcached.facade.MemcachedClient;
 public abstract class ClientImplBase implements ClientImpl {
 
     /**
-     * Default namespace
+     * Key namespace
      */
     protected String namespace = MemcachedClient.DEFAULT_NAMESPACE;
+
+    /**
+     * Max milliseconds to wait memcached
+     */
+    protected long maxWaitMillis = 100L;
 
     /**
      * Returns key with namespace
@@ -51,4 +56,14 @@ public abstract class ClientImplBase implements ClientImpl {
         }
     }
 
+
+    @Override
+    public long getMaxWaitMillis() {
+        return this.maxWaitMillis;
+    }
+
+    @Override
+    public void setMaxWaitMillis(long maxWaitMillis) {
+        this.maxWaitMillis = maxWaitMillis;
+    }
 }

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class BenchmarkTest {
 
@@ -134,6 +135,9 @@ public class BenchmarkTest {
             long startTime = System.currentTimeMillis();
             for (int i = 0; i < times; i++) {
                 SampleBean result = spymemcached.get(key);
+                if (result == null) {
+                    fail("No memcached servers!");
+                }
                 assertThat(result.name, is(equalTo(value.name)));
             }
             double time = Double.valueOf(System.currentTimeMillis() - startTime) / times;
@@ -201,6 +205,9 @@ public class BenchmarkTest {
             long startTime = System.currentTimeMillis();
             for (int i = 0; i < times; i++) {
                 SampleResponse result = spymemcached.get(key);
+                if (result == null) {
+                    fail("No memcached servers!");
+                }
                 assertThat(result.getCode(), is(equalTo(value.getCode())));
             }
             double time = Double.valueOf(System.currentTimeMillis() - startTime) / times;

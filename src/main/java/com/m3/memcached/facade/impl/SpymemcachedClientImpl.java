@@ -16,6 +16,8 @@
 package com.m3.memcached.facade.impl;
 
 import net.spy.memcached.MemcachedClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -29,6 +31,8 @@ import static com.m3.memcached.facade.util.Assertion.notNullValue;
  * Concrete client implementation with Spymemcached
  */
 public class SpymemcachedClientImpl extends ClientImplBase {
+
+    private static final Logger log = LoggerFactory.getLogger(SpymemcachedClientImpl.class);
 
     private MemcachedClient memcached;
 
@@ -64,14 +68,29 @@ public class SpymemcachedClientImpl extends ClientImplBase {
     }
 
     @Override
+    public void initialize(List<InetSocketAddress> addresses, String namespace, long maxWaitMillis) throws IOException {
+        notNullValue("addresses", addresses);
+        memcached = new MemcachedClient(addresses);
+        setNamespace(namespace);
+        setMaxWaitMillis(maxWaitMillis);
+        waitForConnectionReady();
+    }
+
+    @Override
     public <T> void set(String key, int secondsToExpire, T value) throws IOException {
         notNullValue("key", key);
+        if (hasNoAvailableServer()) {
+            return;
+        }
         memcached.set(getKeyWithNamespace(key), secondsToExpire, value);
     }
 
     @Override
     public <T> void setAndEnsure(String key, int secondsToExpire, T value) throws IOException {
         notNullValue("key", key);
+        if (hasNoAvailableServer()) {
+            return;
+        }
         Future<Boolean> future = memcached.set(getKeyWithNamespace(key), secondsToExpire, value);
         try {
             boolean result = future.get(5, TimeUnit.SECONDS);
@@ -93,7 +112,23 @@ public class SpymemcachedClientImpl extends ClientImplBase {
     @SuppressWarnings("unchecked")
     public <T> T get(String key) throws IOException {
         notNullValue("key", key);
-        return (T) memcached.get(getKeyWithNamespace(key));
+        try {
+            if (hasNoAvailableServer()) {
+                return null;
+            }
+            return (T) memcached.asyncGet(getKeyWithNamespace(key)).get(getMaxWaitMillis(), TimeUnit.MILLISECONDS);
+        } catch (Throwable t) {
+            String failedMessage = "Failed to get value on memcached! (key:" + key + ")";
+            throw new IOException(failedMessage, t);
+        }
+    }
+
+    private boolean hasNoAvailableServer() {
+        boolean unavailable = memcached.getAvailableServers().isEmpty();
+        if (unavailable && log.isDebugEnabled()) {
+            log.debug("No available memcached servers now.");
+        }
+        return unavailable;
     }
 
 

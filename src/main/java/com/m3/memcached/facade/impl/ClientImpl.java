@@ -48,9 +48,23 @@ public interface ClientImpl {
      */
     void initialize(List<InetSocketAddress> addresses, String namespace) throws IOException;
 
+    /**
+     * Initializes this instance
+     *
+     * @param addresses memcached server addresses
+     * @param namespace namespace
+     * @param maxWaitMillis max wait millis
+     * @throws IOException something wrong
+     */
+    void initialize(List<InetSocketAddress> addresses, String namespace, long maxWaitMillis) throws IOException;
+
     String getNamespace();
 
     void setNamespace(String namespace);
+
+    long getMaxWaitMillis();
+
+    void setMaxWaitMillis(long maxWaitMillis);
 
     <T> void set(String key, int secondsToExpire, T value) throws IOException;
 

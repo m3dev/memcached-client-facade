@@ -6,10 +6,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class SpymemcachedClientImplTest {
 
@@ -31,13 +33,13 @@ public class SpymemcachedClientImplTest {
 
     @Test
     public void type() throws Exception {
-        assertThat(SpymemcachedClientImpl.class, notNullValue());
+        assertThat(SpymemcachedClientImpl.class, not(nullValue()));
     }
 
     @Test
     public void instantiation() throws Exception {
         SpymemcachedClientImpl target = new SpymemcachedClientImpl();
-        assertThat(target, notNullValue());
+        assertThat(target, not(nullValue()));
     }
 
     @Test
@@ -83,6 +85,9 @@ public class SpymemcachedClientImplTest {
         value.name = "foo";
         memcached.set(key, secondsToExpire, value);
         SampleBean actual = memcached.get(key);
+        if (actual == null) {
+            fail("No memcached servers!");
+        }
         assertThat(actual.name, is(equalTo(value.name)));
     }
 
@@ -92,6 +97,28 @@ public class SpymemcachedClientImplTest {
         int secondsToExpire = 3;
         SampleBean value = new SampleBean();
         memcached.setAndEnsure(key, secondsToExpire, value);
+    }
+
+    @Test
+    public void isInitialized_A$() throws Exception {
+        boolean actual = memcached.isInitialized();
+        boolean expected = true;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void isInitialized_A$_NotYet() throws Exception {
+        boolean actual = new SpymemcachedClientImpl().isInitialized();
+        boolean expected = false;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void initialize_A$List$String$long() throws Exception {
+        List<InetSocketAddress> addresses = Arrays.asList(new InetSocketAddress("127.0.0.1", 11211));
+        String namespace = null;
+        long maxWaitMillis = 10L;
+        memcached.initialize(addresses, namespace, maxWaitMillis);
     }
 
 }

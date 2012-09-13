@@ -109,6 +109,9 @@ public class Configuration {
 
     @SuppressWarnings("unchecked")
     public void setAdaptorClassName(String adaptorClassName) throws ClassNotFoundException {
+        if (adaptorClassName == null) {
+            throw new IllegalArgumentException("adaptorClassName should not be null.");
+        }
         this.adaptorClass = (Class<? extends MemcachedClientAdaptor>) Class.forName(adaptorClassName);
     }
 

@@ -17,6 +17,8 @@ package com.m3.memcached.facade.impl;
 
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -28,6 +30,8 @@ import static com.m3.memcached.facade.util.Assertion.notNullValue;
  * Concrete client implementation with Xmemcached
  */
 public class XmemcachedClientImpl extends ClientImplBase {
+
+    private static final Logger log = LoggerFactory.getLogger(SpymemcachedClientImpl.class);
 
     private MemcachedClient memcached;
 
@@ -50,9 +54,20 @@ public class XmemcachedClientImpl extends ClientImplBase {
     }
 
     @Override
+    public void initialize(List<InetSocketAddress> addresses, String namespace, long maxWaitMillis) throws IOException {
+        notNullValue("addresses", addresses);
+        memcached = new XMemcachedClient(addresses);
+        setNamespace(namespace);
+        setMaxWaitMillis(maxWaitMillis);
+    }
+
+    @Override
     public <T> void set(String key, int secondsToExpire, T value) throws IOException {
         notNullValue("key", key);
         try {
+            if (hasNoAvailableServer()) {
+                return;
+            }
             memcached.set(getKeyWithNamespace(key), secondsToExpire, value);
         } catch (Exception e) {
             String failedMessage = "Failed to set value on memcached! " +
@@ -66,6 +81,9 @@ public class XmemcachedClientImpl extends ClientImplBase {
     public <T> void setAndEnsure(String key, int secondsToExpire, T value) throws IOException {
         notNullValue("key", key);
         try {
+            if (hasNoAvailableServer()) {
+                return;
+            }
             set(key, secondsToExpire, value);
             T cached = (T) memcached.get(getKeyWithNamespace(key));
             if (cached == null) {
@@ -85,11 +103,22 @@ public class XmemcachedClientImpl extends ClientImplBase {
     public <T> T get(String key) throws IOException {
         notNullValue("key", key);
         try {
+            if (hasNoAvailableServer()) {
+                return null;
+            }
             return (T) memcached.get(getKeyWithNamespace(key));
         } catch (Exception e) {
             String failedMessage = "Failed to get value on memcached! (key:" + key + ")";
             throw new IOException(failedMessage, e);
         }
+    }
+
+    private boolean hasNoAvailableServer() {
+        boolean unavailable = memcached.getAvailableServers().isEmpty();
+        if (unavailable && log.isDebugEnabled()) {
+            log.debug("No available memcached servers now.");
+        }
+        return unavailable;
     }
 
 }
