@@ -113,6 +113,16 @@ public class MemcachedClient {
     }
 
     /**
+     * Delete key from memcached servers
+     * @param key key
+     * @throws IOException when failed accessing servers or putting value
+     */
+    public void delete(String key) throws IOException {
+        ensureInitialized();
+        clientImpl.delete(key);
+    }
+
+    /**
      * Returns {@link ClientImpl} instance
      *
      * @return client implementation

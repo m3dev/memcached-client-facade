@@ -121,4 +121,15 @@ public class SpymemcachedClientImplTest {
         memcached.initialize(addresses, namespace, maxWaitMillis);
     }
 
+    @Test
+    public void delete_A$String() throws Exception {
+        String key = "SpymemcachedClientImpl_delete_A$String";
+        memcached.set(key, 10, "foo");
+        assertThat(memcached.get(key).toString(), is(equalTo("foo")));
+        memcached.delete(key);
+        Thread.sleep(1000L);
+        assertThat(memcached.get(key), is(nullValue()));
+    }
+
+
 }

@@ -72,4 +72,6 @@ public interface ClientImpl {
 
     <T> T get(String key) throws IOException;
 
+    void delete(String key) throws IOException;
+
 }

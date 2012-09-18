@@ -123,6 +123,20 @@ public class SpymemcachedClientImpl extends ClientImplBase {
         }
     }
 
+    @Override
+    public void delete(String key) throws IOException {
+        notNullValue("key", key);
+        try {
+            if (hasNoAvailableServer()) {
+                return;
+            }
+            memcached.delete(getKeyWithNamespace(key));
+        } catch (Throwable t) {
+            String failedMessage = "Failed to delete key on memcached! (key:" + key + ")";
+            throw new IOException(failedMessage, t);
+        }
+    }
+
     private boolean hasNoAvailableServer() {
         boolean unavailable = memcached.getAvailableServers().isEmpty();
         if (unavailable && log.isDebugEnabled()) {

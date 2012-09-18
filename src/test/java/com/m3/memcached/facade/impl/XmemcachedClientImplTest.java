@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -115,6 +114,15 @@ public class XmemcachedClientImplTest {
         String namespace = null;
         long maxWaitMillis = 10L;
         memcached.initialize(addresses, namespace, maxWaitMillis);
+    }
+
+    @Test
+    public void delete_A$String() throws Exception {
+        String key = "XmemcachedClientImpl_delete_A$String";
+        memcached.set(key, 10, "foo");
+        assertThat(memcached.get(key).toString(), is(equalTo("foo")));
+        memcached.delete(key);
+        assertThat(memcached.get(key), is(nullValue()));
     }
 
 }

@@ -1,13 +1,7 @@
 package com.m3.memcached.facade;
 
-import java.io.IOException;
-import com.m3.memcached.facade.MemcachedClient.*;
-import static org.junit.Assert.*;
-import static org.mockito.BDDMockito.*;
-
 import com.m3.memcached.facade.adaptor.MemcachedClientAdaptor;
 import com.m3.memcached.facade.adaptor.SpymemcachedAdaptor;
-import com.m3.memcached.facade.adaptor.XmemcachedAdaptor;
 import com.m3.memcached.facade.bean.SampleBean;
 import com.m3.memcached.facade.impl.ClientImpl;
 import org.junit.Before;
@@ -104,8 +98,8 @@ public class MemcachedClient_Spymemcached_Test {
         target.ensureInitialized();
     }
 
-	@Test
-	public void setAndEnsure_A$String$int$Object() throws Exception {
+    @Test
+    public void setAndEnsure_A$String$int$Object() throws Exception {
         MemcachedClient target = new MemcachedClient(clientAdaptor);
         target.initialize(addresses);
         String key = "something";
