@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.List;
 
-import static com.m3.memcached.facade.util.Assertion.notNullValue;
+import static com.m3.memcached.facade.util.Assertion.*;
 
 /**
  * Concrete client implementation with Xmemcached
@@ -124,6 +124,24 @@ public class XmemcachedClientImpl extends ClientImplBase {
         } catch (Throwable t) {
             String failedMessage = "Failed to delete key on memcached! (key:" + key + ")";
             throw new IOException(failedMessage, t);
+        }
+    }
+
+    @Override
+    public void shutdown() {
+        if (memcached == null) {
+            throw new IllegalStateException("Memcached client instance has not been initialized yet.");
+        }
+        try {
+            if (!memcached.isShutdown()) {
+                memcached.shutdown();
+            }
+        } catch (IOException e) {
+            String message = "Failed to shutdown memcached client because " + e.getMessage();
+            log.info(message);
+            if (log.isDebugEnabled()) {
+                log.debug(message, e);
+            }
         }
     }
 

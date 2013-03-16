@@ -17,6 +17,8 @@ package com.m3.memcached.facade;
 
 import com.m3.memcached.facade.adaptor.MemcachedClientAdaptor;
 import com.m3.memcached.facade.impl.ClientImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -26,6 +28,8 @@ import java.util.List;
  * Memcached Client Facade
  */
 public class MemcachedClient {
+
+    private static final Logger log = LoggerFactory.getLogger(MemcachedClient.class);
 
     /**
      * Default namespace
@@ -114,12 +118,26 @@ public class MemcachedClient {
 
     /**
      * Delete key from memcached servers
+     *
      * @param key key
      * @throws IOException when failed accessing servers or putting value
      */
     public void delete(String key) throws IOException {
         ensureInitialized();
         clientImpl.delete(key);
+    }
+
+    /**
+     * Shutdown client instance.
+     */
+    public void shutdown() {
+        try {
+            clientImpl.shutdown();
+        } catch (Exception e) {
+            if (log.isDebugEnabled()) {
+                log.debug("Failed to shutdown memcached client instance.", e);
+            }
+        }
     }
 
     /**

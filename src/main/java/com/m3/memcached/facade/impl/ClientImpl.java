@@ -74,4 +74,6 @@ public interface ClientImpl {
 
     void delete(String key) throws IOException;
 
+    void shutdown();
+
 }

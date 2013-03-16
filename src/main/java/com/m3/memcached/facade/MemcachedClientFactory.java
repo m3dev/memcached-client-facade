@@ -18,6 +18,7 @@ package com.m3.memcached.facade;
 /**
  * {@link MemcachedClient} Factory
  */
+@Deprecated
 public class MemcachedClientFactory {
 
     private MemcachedClientFactory() {

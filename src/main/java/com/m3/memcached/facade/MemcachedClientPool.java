@@ -31,13 +31,56 @@ public final class MemcachedClientPool {
      */
     private static final String DEFAULT_CLIENT_ADAPTOR_NAME = "com.m3.memcached.facade.adaptor.SpymemcachedAdaptor";
 
-    private MemcachedClientPool() {
+    private Configuration config;
+    private MemcachedClient client;
+
+    public MemcachedClientPool() throws Exception {
+        this(null);
+    }
+
+    public MemcachedClientPool(Configuration config) throws Exception {
+        if (config == null) {
+            config = new Configuration();
+            config.loadConfigFromProperties();
+        }
+        this.config = config;
+
+        // create new client instance
+        Class<? extends MemcachedClientAdaptor> adaptorClass = config.getAdaptorClass();
+        if (adaptorClass == null) {
+            adaptorClass = (Class<? extends MemcachedClientAdaptor>) Class.forName(DEFAULT_CLIENT_ADAPTOR_NAME);
+        }
+        client = new MemcachedClient(adaptorClass.newInstance());
+        Assertion.notNullValue("config.getAddresses()", config.getAddresses());
+        client.initialize(config.getAddresses(), config.getNamespace());
+    }
+
+    public Configuration getConfig() {
+        return this.config;
+    }
+
+    public MemcachedClient getClient() {
+        return this.client;
+    }
+
+    public void shutdown() {
+        client.shutdown();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            super.finalize();
+        } finally {
+            shutdown();
+        }
     }
 
     /**
      * Cached client instances
      */
-    private static final Map<String, MemcachedClient> CACHED_CLIENTS = new ConcurrentHashMap<String, MemcachedClient>();
+    @Deprecated
+    private static final Map<String, MemcachedClient> DEPRECATED_POOL = new ConcurrentHashMap<String, MemcachedClient>();
 
     /**
      * Returns a cached {@link MemcachedClient} instance
@@ -47,8 +90,8 @@ public final class MemcachedClientPool {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public static MemcachedClient getMemcachedClient(Configuration config) throws Exception {
-
         if (config == null) {
             config = new Configuration();
             config.loadConfigFromProperties();
@@ -59,7 +102,7 @@ public final class MemcachedClientPool {
         }
 
         // cached client instance
-        MemcachedClient memcached = CACHED_CLIENTS.get(namespace);
+        MemcachedClient memcached = DEPRECATED_POOL.get(namespace);
         if (memcached != null) {
             return memcached;
         }
@@ -69,10 +112,10 @@ public final class MemcachedClientPool {
         if (adaptorClass == null) {
             adaptorClass = (Class<? extends MemcachedClientAdaptor>) Class.forName(DEFAULT_CLIENT_ADAPTOR_NAME);
         }
-        memcached = new MemcachedClient(config.getAdaptorClass().newInstance());
+        memcached = new MemcachedClient(adaptorClass.newInstance());
         Assertion.notNullValue("config.getAddresses()", config.getAddresses());
         memcached.initialize(config.getAddresses(), namespace);
-        CACHED_CLIENTS.put(namespace, memcached);
+        DEPRECATED_POOL.put(namespace, memcached);
         return memcached;
     }
 

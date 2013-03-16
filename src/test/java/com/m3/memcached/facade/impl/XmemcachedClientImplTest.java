@@ -2,6 +2,7 @@ package com.m3.memcached.facade.impl;
 
 import com.m3.memcached.facade.Configuration;
 import com.m3.memcached.facade.bean.SampleBean;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,8 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class XmemcachedClientImplTest {
 
@@ -27,6 +27,11 @@ public class XmemcachedClientImplTest {
         }
         memcached.initialize(config.getAddresses());
         addresses = config.getAddresses();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        memcached.shutdown();
     }
 
     @Test
@@ -123,6 +128,17 @@ public class XmemcachedClientImplTest {
         assertThat(memcached.get(key).toString(), is(equalTo("foo")));
         memcached.delete(key);
         assertThat(memcached.get(key), is(nullValue()));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void shutdown_A$_NotInitialized() throws Exception {
+        XmemcachedClientImpl impl = new XmemcachedClientImpl();
+        impl.shutdown();
+    }
+
+    @Test
+    public void shutdown_A$() throws Exception {
+        memcached.shutdown();
     }
 
 }

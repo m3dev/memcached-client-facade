@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static com.m3.memcached.facade.util.Assertion.notNullValue;
+import static com.m3.memcached.facade.util.Assertion.*;
 
 /**
  * Concrete client implementation with Spymemcached
@@ -135,6 +135,14 @@ public class SpymemcachedClientImpl extends ClientImplBase {
             String failedMessage = "Failed to delete key on memcached! (key:" + key + ")";
             throw new IOException(failedMessage, t);
         }
+    }
+
+    @Override
+    public void shutdown() {
+        if (memcached == null) {
+            throw new IllegalStateException("Memcached client instance has not been initialized yet.");
+        }
+        memcached.shutdown();
     }
 
     private boolean hasNoAvailableServer() {
