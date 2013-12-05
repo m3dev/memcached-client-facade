@@ -2,9 +2,7 @@
 
 ## A simple wrapper API for memcached clients
 
-'memacached-client-facade' provides a pluggable wrapper API for memcached clients and developers can access memcached servers transparently.
-
-Currently supports following 2 libraries, and it's also possible to add new adaptors.
+'memacached-client-facade' provides a pluggable wrapper API for memcached clients and developers can access memcached servers transparently. Currently supports following 2 libraries, and it's also possible to add new adaptors.
 
 ## Getting Started
 
@@ -15,7 +13,7 @@ Currently supports following 2 libraries, and it's also possible to add new adap
   <dependency>
     <groupId>com.m3</groupId>
     <artifactId>memcached-client-facade</artifactId>
-    <version>1.0.1</version>
+    <version>[1.0,)</version>
   </dependency>
 </dependencies>
 ```
@@ -29,16 +27,23 @@ Configuration config = new Configuration();
 config.setAdaptorClassName("com.m3.memcached.facade.adaptor.SpymemcachedAdaptor");
 config.setAddressesAsString("server1:11211,server2:11211"); // csv format
 config.setNamespace("com.m3.memcached.example");
+MemcachedClientPool pool = new MemcachedClientPool(config);
+MemcachedClient memcached = pool.getClient();
 
-MemcachedClient memcached = MemcachedClientFactory.create(config);
+try {
+  String toBeCached = new java.util.Date().toString();
+  memcached.set("stopped time", 1, toBeCached); // whitespace in cache key will be replaced to underscore
 
-Thread.sleep(500L);
-String toBeCached = new java.util.Date().toString();
-memcached.set("stopped time", 1, toBeCached); // whitespace in cache key will be replaced to underscore
-Thread.sleep(500L);
-assertThat(memcached.get("stopped time"), is(equalTo(toBeCached))); // "Wed Oct 12 00:01:54 JST 2011"
-Thread.sleep(1000L);
-assertThat(memcached.get("stopped time"), is(nullValue())); // null
+  Thread.sleep(500L);
+  assertThat(memcached.get("stopped time"), is(equalTo(toBeCached))); // "Wed Oct 12 00:01:54 JST 2011"
+
+  Thread.sleep(1000L);
+  assertThat(memcached.get("stopped time"), is(nullValue())); // null
+
+} finally {
+  // spymemcached/xmemcached manages their own threads, you should shutdown them.
+  pool.shutdown();
+}
 ```
 
 or configure with `memcached.properties` as follows:
@@ -60,7 +65,7 @@ MemcachedClient memcached = MemcachedClientFactory.create(config);
 
 - com.m3.memcached.facade.adaptor.SpymemcachedAdaptor
 
-  for http://code.google.com/p/spymemcached/
+  for https://github.com/couchbase/spymemcached
 
 - com.m3.memcached.facade.adaptor.XmemcachedAdaptor
 
@@ -70,7 +75,7 @@ MemcachedClient memcached = MemcachedClientFactory.create(config);
 ## License
 
 ```
- Copyright 2011 - 2012 M3, Inc.
+ Copyright 2011 - 2013 M3, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
